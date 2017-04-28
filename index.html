@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>加载AfferBuffer并解析</title>
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<style>
+		*{margin:0;padding:0;}
+		html,body{width:100%;height:100%;font-size:16px;font-family:Arial,Helvetica,sans-serif,'Microsoft YaHei';}
+	</style>
+	<script src="buffer2pics.js"></script>
+</head>
+<body>
+	<img data-buffer="images/head_kv/background.jpg" src="" alt="">
+	<script type="text/javascript">
+		window.onload = function(){
+			buffer2pics("out.png",callbackFuc);
+			var imgs = document.getElementsByTagName('img');
+			var g = window.URL || window.webkitURL || window;
+
+			// 取出值在数组中的index
+			function outidx(value,arr){
+				for(var i = 0; i < arr.length; i++){
+					if(value == arr[i]){
+						return i
+					}
+				}
+			}
+
+			function callbackFuc(o,u,f){
+				var o = o || [],
+					u = u || [],
+					f = f || [];
+				for(var i = 0; i < imgs.length; i++){
+					if(imgs[i].attributes['data-buffer']){
+						var buffer = imgs[i].attributes['data-buffer'].value;
+						var m = outidx(buffer,o);
+						var n = imgs[i];
+						n.onload = function(e){
+							g.revokeObjectURL(e.currentTarget.src)
+						};
+						n.src = g.createObjectURL(new Blob([f[m]]));
+						n.removeAttribute('data-buffer');
+					}
+				}
+			}
+		}
+	</script>
+</body>
+</html>
