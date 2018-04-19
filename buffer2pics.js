@@ -1,11 +1,12 @@
 /**
  * 
  * 
- * @param {any} src 合成的图片路径
- * @param {any} callback 解析后执行的函数
+ * @param {string} src 合成的图片路径
+ * @param {function} callback 解析后执行的函数
+ * @param {function} process 加载进程的回回调
  * @param {o,u,f} o为为路径名称组, u为图片组, f为buffer组
  */
-;function buffer2pics(src,callback){
+;function buffer2pics(src,callback,process){
 	var n = function(t) {
             var n = t.currentTarget,
                 r = n.response,
@@ -35,7 +36,7 @@
                 g = window.URL || window.webkitURL || window,
                 y = function() {
                     if (m >= f.length){
-                    	callback(o,u,f);
+                    	!!callback && callback(o,u,f);
                     }
                     else {
                         var t = f[m],
@@ -82,6 +83,7 @@
     r.open("get", src, !0),
     r.onload = n,
     r.onprogress = function(n) {
+        !!process && process(n.loaded, n.total)
     	// console.log("loaded: " + n.loaded + ", total: " + n.total);
     },
     r.onerror = function(t, n) {
